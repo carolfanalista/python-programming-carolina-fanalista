@@ -1,0 +1,78 @@
+seqa= 'ACTGG'
+seqb= 'ACCA'
+gap		=-2
+
+#dictionary with match and mismatch
+m= {'A':{ 'A':2, 'C':-1, 'G':0, 'T':-1},
+    'C':{ 'A':-1, 'C':2, 'G':-1, 'T':-1},
+    'G':{ 'A':0, 'C':-1, 'G':2, 'T':0},
+    'T':{ 'A':-1, 'C':-1, 'G':0, 'T':2}}
+
+
+r=len(seqa)+1
+c=len(seqb)+1
+
+#definition of matrix
+def matrix(seqa,seqb):
+	R=[]
+	for i in range(r):
+		R.append([])
+		for j in range(c):	
+			R[i].append(0)
+	return(R)
+
+
+#Definition Traceback function
+def traceback(seqa,seqb):
+	F=[]
+	for i in range(r):
+		F.append([])
+		for j in range(c):	
+			F[i].append(' ')
+	return (F)
+
+
+# Algorithm
+def sw(seqa,seqb):
+	R=matrix(seqa,seqb)	
+	F= traceback(seqa,seqb)	
+	for i in range(1,r):
+		for j in range(1,c):
+			up=R[i-1][j]+ gap
+			left=R[i][j-1]+ gap
+			diag = R[i-1][j-1] + m[seqb[j-1]][seqa[i-1]]
+			score=max(up,left,diag,0)
+			R[i][j]=score
+			if (score== up):
+				F[i][j]= '^'
+			elif (score==left):
+				F[i][j]= '<'
+			else:	
+				F[i][j]= 'D'
+ 
+	
+	
+	return(R,F)	
+			
+
+
+
+
+M= sw(seqa,seqb)
+print (M[0])
+print (M[1])
+
+
+# search max value of matrix
+maximum = 0
+I = 0
+J = 0
+
+for i in range(1, r):
+	for j in range(1, c):
+		if(M[0][i][j] > maximum):
+			maximum = M[0][i][j]
+			I = i
+			J = j
+				
+print (maximum) 
